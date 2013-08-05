@@ -55,8 +55,9 @@ def scale_vecs(vecdict):
     return [Vec(v1.D,{k2:float(v2)/k1 for k2,v2 in v1.f.items()}) for k1,v1 in vecdict.items()]
 
 
-from GF2 import one
+
 ## Problem 3
+from GF2 import one
 def GF2_span(D, L):
     '''
     >>> from GF2 import one
@@ -73,13 +74,50 @@ def GF2_span(D, L):
     >>> Vec(D, {x:one for x in D}) in GF2_span(D, L)
     True
     '''
-    r = []
-    for k in D:
-        for a in (0,one):
-            r.append(sum([Vec(D,{k:a*v[k] for v in L})]))
-    return r
+    def if_vec_used(working_vec,cof_v_pair):
+        '''
+        when generate the other vectors in the space,
+        in the form k1*v1 + k2*v2 + ... kn*vn
+        each vector can only be used once
+        '''
+        for a,v in working_vec:
+            if v == cof_v_pair[1]:
+                return True
+        return False
+        
+    def gen(vec_num,working_vec,l,result):
+        if(len(working_vec)<vec_num):
+            for x in l:
+                if not if_vec_used(working_vec,x):
+                    working_vec.append(x)
+                    gen(vec_num,working_vec,l,result)
+            if(len(working_vec)):
+                working_vec.pop()
+        else:
+            #print(working_vec)
+            #Now we have all full formed coefficient(scalar) and pairs: (k1,v1) , (k2,v2) , ...,(kn,vn)
+            #apply the scalars and add the vectors
+            s = sum([a*v for a,v in working_vec])
 
+            #do not add it if it has already been spotted
+            duplicate = False
+            for v in result:
+                if( s == v):
+                    #print("dup")
+                    duplicate = True
+                    break
+            if(not duplicate):
+                result.append(s)
+            if(len(working_vec)):
+                working_vec.pop()
+            
+    #get all combinatins of coefficients and vectors
+    l = [ (a,v) for a in (0,one) for v in L]
 
+    res = []
+    gen(len(L),[],l,res)
+    return res
+    
 
 ## Problem 4
 # Answer with a boolean, please.
@@ -95,6 +133,5 @@ is_it_a_vector_space_4 = False
 
 
 ## Problem 6
-
 is_it_a_vector_space_5 = True
 is_it_a_vector_space_6 = False
