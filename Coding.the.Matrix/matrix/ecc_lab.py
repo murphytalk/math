@@ -1,6 +1,7 @@
+# -*- coding: utf-8 -*-
 from vec import Vec
 from mat import Mat
-from bitutil import noise
+from bitutil import noise,str2bits,bits2str,mat2bits,bits2mat
 from GF2 import one
 from matutil import listlist2mat,coldict2mat,mat2coldict
 from vecutil import list2vec
@@ -64,16 +65,16 @@ def find_error_matrix(S):
         >>> find_error_matrix(S)
         Mat(({0, 1, 2, 3, 4, 5, 6}, {0, 1, 2, 3}), {(1, 2): 0, (3, 2): one, (0, 0): 0, (4, 3): one, (3, 0): 0, (6, 0): 0, (2, 1): 0, (6, 2): 0, (2, 3): 0, (5, 1): one, (4, 2): 0, (1, 0): 0, (0, 3): 0, (4, 0): 0, (0, 1): 0, (3, 3): 0, (4, 1): 0, (6, 1): 0, (3, 1): 0, (1, 1): 0, (6, 3): 0, (2, 0): 0, (5, 0): 0, (2, 2): 0, (1, 3): 0, (5, 3): 0, (5, 2): 0, (0, 2): 0})
     """
-    return coldict2mat([find_error(v) for k,v in mat2coldict(S).items()])
+    return coldict2mat({k:find_error(v) for k,v in mat2coldict(S).items()})
 
 ## Task 6
 s = "I'm trying to free your mind, Neo. But I can only show you the door. You’re the one that has to walk through it."
-P = None
+P = bits2mat(str2bits(s))
 
 ## Task 7
-C = None
-bits_before = None
-bits_after = None
+C = G*P
+bits_before = len(mat2bits(P))
+bits_after = len(mat2bits(C))
 
 
 ## Ungraded Task
@@ -89,4 +90,7 @@ def correct(A):
         >>> correct(A)
         Mat(({0, 1, 2, 3, 4, 5, 6}, {1, 2, 3}), {(0, 1): 0, (1, 2): 0, (3, 2): 0, (1, 3): 0, (3, 3): 0, (5, 2): one, (6, 1): 0, (3, 1): 0, (2, 1): 0, (0, 2): one, (6, 3): one, (4, 2): 0, (6, 2): one, (2, 3): 0, (4, 3): 0, (2, 2): 0, (5, 1): 0, (0, 3): one, (4, 1): 0, (1, 1): 0, (5, 3): one})
     """
-    pass
+    e = find_error_matrix(H*A)
+    c = e + A
+    return c
+
