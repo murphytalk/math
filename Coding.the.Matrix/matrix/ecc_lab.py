@@ -2,7 +2,7 @@ from vec import Vec
 from mat import Mat
 from bitutil import noise
 from GF2 import one
-from matutil import listlist2mat
+from matutil import listlist2mat,coldict2mat,mat2coldict
 from vecutil import list2vec
 
 ## Task 1 part 1
@@ -39,14 +39,19 @@ def find_error(e):
         >>> find_error(Vec({0,1,2}, {1:one, 2:one}))
         Vec({0, 1, 2, 3, 4, 5, 6},{2: one})    
     """
-    pass
+    v=[ list2vec([0 if x!=i else one for x in range(7)]) for i in range(7) ]
+    for x in v:
+        if H*x == e:
+            #the grader only accepts sparsed reprentation!
+            return Vec(x.D,{ key:value for  key,value in x.f.items() if value!=0 })
+    return Vec(v[0].D,{})
 
 ## Task 4 part 2
 # Use the Vec class for your answers.
 non_codeword = Vec({0,1,2,3,4,5,6}, {0: one, 1:0, 2:one, 3:one, 4:0, 5:one, 6:one})
-error_vector = Vec(..., ...)
-code_word = Vec(..., ...)
-original = ... # R * code_word
+error_vector = find_error(H*non_codeword)
+code_word = error_vector + non_codeword
+original = R * code_word
 
 
 ## Task 5
@@ -59,7 +64,7 @@ def find_error_matrix(S):
         >>> find_error_matrix(S)
         Mat(({0, 1, 2, 3, 4, 5, 6}, {0, 1, 2, 3}), {(1, 2): 0, (3, 2): one, (0, 0): 0, (4, 3): one, (3, 0): 0, (6, 0): 0, (2, 1): 0, (6, 2): 0, (2, 3): 0, (5, 1): one, (4, 2): 0, (1, 0): 0, (0, 3): 0, (4, 0): 0, (0, 1): 0, (3, 3): 0, (4, 1): 0, (6, 1): 0, (3, 1): 0, (1, 1): 0, (6, 3): 0, (2, 0): 0, (5, 0): 0, (2, 2): 0, (1, 3): 0, (5, 3): 0, (5, 2): 0, (0, 2): 0})
     """
-    pass
+    return coldict2mat([find_error(v) for k,v in mat2coldict(S).items()])
 
 ## Task 6
 s = "I'm trying to free your mind, Neo. But I can only show you the door. You’re the one that has to walk through it."
