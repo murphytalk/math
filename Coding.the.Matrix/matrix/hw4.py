@@ -108,7 +108,7 @@ zero_comb_3 = [one,one,0,0,one]
 ## Problem 10
 # Please give your solution as a list of coefficients of the vectors
 # in the set in order (list the coefficient for v_i before v_j if i < j).
-#assign one to edges that comprise a loop, 0 to the others
+#assign one to edges that consist a loop, 0 to the others
 sum_to_zero_1 = [0,one,0,one,one]
 sum_to_zero_2 = [0,one,0,one,one,0,0,0]
 sum_to_zero_3 = [one,0,one,one,one]
@@ -118,18 +118,29 @@ sum_to_zero_4 = [one,one,one,one,one,0,0]
 
 ## Problem 11
 ## Please express your answer a list of ints, such as [1,0,0,0,0]
-
-exchange_1 = [...]
-exchange_2 = [...]
-exchange_3 = [...]
+'''
+according to the proof,in
+z = alpha * A + (beta1*w1+beta2*w2 + ... + beta_n*w_n)
+the answer w can be any of w1,..,w_n where its corresponding beta is not 0
+'''
+exchange_1 = [0,0,1,0,0]
+exchange_2 = [0,0,0,1,0]
+exchange_3 = [0,0,0,0,1]
 
 
 ## Problem 12
 # Please give the name of the vector you want to replace as a string (e.g. 'v1')
+'''
+in the original graph a~e are connected and no cycle => independent
+so the questions is after adding an edge(z), which edge in (S-A) should be removed so
 
-replace_1 = ...
-replace_2 = ...
-replace_3 = ...
+1. a~e remain being connected
+2. there is no cycle
+
+'''
+replace_1 = 'v3'
+replace_2 = 'v1'
+replace_3 = 'v4'
 
 
 
@@ -288,6 +299,9 @@ def exchange(S, A, z):
         >>> z = list2vec([0,2,1,1])
         >>> exchange(S, A, z) == Vec({0, 1, 2, 3},{0: 0, 1: 0, 2: 1, 3: 0})
         True
+
+    https://class.coursera.org/matrix-001/forum/thread?thread_id=3057
     '''
+    S_A=[s for s in S if not s in A]
     pass
 
