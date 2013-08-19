@@ -47,8 +47,8 @@ def rotate_about(x,y,angle):
     Output:  Corresponding 3x3 rotation matrix.
     It might be helpful to use procedures you already wrote.
     '''
-    #return translation(x,y)*rotation(angle)
-    return rotation(angle)*translation(x,y)
+    return translation(x,y)*rotation(angle)*translation(-x,-y)
+    #return rotation(angle)*translation(x,y)
 
 ## Task 6
 def reflect_y():
