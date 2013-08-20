@@ -327,34 +327,27 @@ def exchange(S, A, z):
         >>> z = list2vec([0,2,1,1])
         >>> exchange(S, A, z) == Vec({0, 1, 2, 3},{0: 0, 1: 0, 2: 1, 3: 0})
         True
+
+    Example2:    
+
+    S = [list2vec(v) for v in [[3,67,8,4],[0,6,3,4],[5,9,5,2],[67,342,567,5],[9,5,9,0],[7,4,5,3],[34,7,65,3]]]
+    A = [list2vec(v) for v in [[3,67,8,4],[0,6,3,4]]]
+    z = list2vec([0,0,0,1])
+    >>> print(test_format((exchange(S, A, z) == list2vec([9,5,9,0])) or (exchange(S, A, z) == list2vec([7,4,5,3])) or (exchange(S, A, z) == list2vec([34, 7, 65, 3]))))
+    False
+    >>> print(test_format((exchange(S, A, z) == list2vec([5,9,5,2])) or (exchange(S, A, z) == list2vec([67,342,567,5]))))
+    True
     '''
-    result = []
-    S_A=[s for s in S if not s in A]
-    print("S:%s"%coldict2mat(S))
-    print("S-A:%s"%coldict2mat(S_A))
-    for w in S_A:
-        print("w:%s"%w)
-        #S+z-w
-        S_plus_z_minus_w = [x for x in S+[z] if x!=w]
-        print("S+z-w:%s"%coldict2mat(S_plus_z_minus_w))
-        print("S:%s"%coldict2mat(S))
-        #Span(S) == Span (S+z-w)
-        if has_same_span(S,S_plus_z_minus_w):
-            ##check if can build z from S-w
-            #S_minus_w = [x for x in S if x!=w]
-            #A = coldict2mat(S_minus_w)
-            #x = solve(A,z)
-            #print(x)
-            #residual = z - A*x
-            #if (residual*residual)>1e-14:
-            #    result.append(w)
-            print("same span")
-            result.append(w)
-        
+    #solve u where S*u=z
+    u = vec2rep(S,z)
 
-    if len(result)>0:
-        return result[0]
+    #according to the proof, the w is those in S-A which have a non-zero cofficient
+    index_in_S = [k for  k,v in u.f.items() if v!=0 ]
+    results = [ S[i] for i in index_in_S if not S[i] in A]
+
+    if len(results)>0:
+        #print(coldict2mat(results))
+        return results[0]
     else:
-        return Vec(z.D,{})
-
+        return None
 
