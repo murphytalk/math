@@ -285,6 +285,34 @@ def superset_basis(S, L):
 
 
 
+def has_same_span(vecs1,vecs2):
+    '''
+    s1=[ list2vec(x) for x in [[1,2,-1],[0,1,1],[2,5,-1]]]
+    s2=[ list2vec(x) for x in [[-2,-6,0],[1,1,-2]]]
+    has_same_span(s1,s2) == True
+    '''
+    def is_linear_comb(vec,v):
+        A = coldict2mat(vec)
+        x = solve(A,v)
+        #print("x=%s"%x)
+        residual = v - A*x
+        #print("res=",residual*residual)
+        if (residual*residual)<1e-14:
+            return True
+        else:
+            return False
+        
+    for v in vecs1:
+        if not is_linear_comb(vecs2,v):
+            return False
+
+    for v in vecs2:
+        if not is_linear_comb(vecs1,v):
+            return False
+
+    return True
+        
+
 ## Problem 18
 def exchange(S, A, z):
     '''
@@ -299,9 +327,34 @@ def exchange(S, A, z):
         >>> z = list2vec([0,2,1,1])
         >>> exchange(S, A, z) == Vec({0, 1, 2, 3},{0: 0, 1: 0, 2: 1, 3: 0})
         True
-
-    https://class.coursera.org/matrix-001/forum/thread?thread_id=3057
     '''
+    result = []
     S_A=[s for s in S if not s in A]
-    pass
+    print("S:%s"%coldict2mat(S))
+    print("S-A:%s"%coldict2mat(S_A))
+    for w in S_A:
+        print("w:%s"%w)
+        #S+z-w
+        S_plus_z_minus_w = [x for x in S+[z] if x!=w]
+        print("S+z-w:%s"%coldict2mat(S_plus_z_minus_w))
+        print("S:%s"%coldict2mat(S))
+        #Span(S) == Span (S+z-w)
+        if has_same_span(S,S_plus_z_minus_w):
+            ##check if can build z from S-w
+            #S_minus_w = [x for x in S if x!=w]
+            #A = coldict2mat(S_minus_w)
+            #x = solve(A,z)
+            #print(x)
+            #residual = z - A*x
+            #if (residual*residual)>1e-14:
+            #    result.append(w)
+            print("same span")
+            result.append(w)
+        
+
+    if len(result)>0:
+        return result[0]
+    else:
+        return Vec(z.D,{})
+
 
