@@ -7,7 +7,7 @@ from matutil import listlist2mat, coldict2mat
 from mat import Mat
 from GF2 import one
 from vec import Vec
-from hw4 import exchange
+from hw4 import exchange,is_independent,vec2rep
 from independence import rank
 
 
@@ -118,7 +118,7 @@ def my_is_independent(L):
     >>> my_is_independent(L[2:5])
     False
     '''
-    return len(L) == rank(L)
+    return len(L) == rank(L) #rank of a vector is the size of its basis
 
 
 ## Problem 6
@@ -135,8 +135,13 @@ def subset_basis(T):
     >>> subset_basis([a0,a1,a2,a3]) == [Vec({'c', 'b', 'a', 'd'},{'a': 1}), Vec({'c', 'b', 'a', 'd'},{'b': 1}), Vec({'c', 'b', 'a', 'd'},{'c': 1})]
     True
     '''
-    pass
-
+    rank_T = rank(T)
+    S = []
+    for x in T:
+        if(is_independent([S+[x]])):
+           S.append(x)
+           if rank(S) == rank_T:break
+    return S
 
 
 ## Problem 7
@@ -148,15 +153,15 @@ def my_rank(L):
     >>> my_rank([list2vec(v) for v in [[1,2,3],[4,5,6],[1.1,1.1,1.1]]])
     2
     '''
-    pass
+    return len(subset_basis(L))
 
 
 ## Problem 8
 # Please give each answer as a boolean
 
-only_share_the_zero_vector_1 = ...
-only_share_the_zero_vector_2 = ...
-only_share_the_zero_vector_3 = ...
+only_share_the_zero_vector_1 = True
+only_share_the_zero_vector_2 = True
+only_share_the_zero_vector_3 = True
 
 
 
@@ -175,9 +180,21 @@ def direct_sum_decompose(U_basis, V_basis, w):
     >>> direct_sum_decompose(U_basis, V_basis, w) == (Vec({0, 1, 2, 3, 4, 5},{0: 2.0, 1: 4.999999999999972, 2: 0.0, 3: 0.0, 4: 1.0, 5: 0.0}), Vec({0, 1, 2, 3, 4, 5},{0: 0.0, 1: 0.0, 2: 0.0, 3: 0.0, 4: 0.0, 5: 0.0}))
     True
     '''
-    pass
+    uv_basis = U_basis + V_basis
+    x = vec2rep(uv_basis,w) #x is the coordination representation in space U+V : uv_basis*x = w
+    #then split the coordinations : the first len(U_basis) are coordinates in U, the rest are coordinates in V
 
+    # coordinates in U
+    uc = list2vec([x[i] for i in range(len(U_basis))])
+    # coordinates in V
+    uv = list2vec([x[i] for i in range(len(U_basis),len(uv_basis))])
 
+    u = coldict2mat(U_basis)*uc 
+    v = coldict2mat(V_basis)*uv
+
+    return (u,v)
+    
+    
 
 ## Problem 10
 def is_invertible(M): 
