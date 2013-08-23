@@ -3,7 +3,7 @@
 
 from vecutil import list2vec
 from solver import solve
-from matutil import listlist2mat, coldict2mat
+from matutil import listlist2mat, coldict2mat,mat2coldict
 from mat import Mat
 from GF2 import one
 from vec import Vec
@@ -158,7 +158,7 @@ def my_rank(L):
 
 ## Problem 8
 # Please give each answer as a boolean
-
+# vectors in two sets should be independent to each other
 only_share_the_zero_vector_1 = True
 only_share_the_zero_vector_2 = True
 only_share_the_zero_vector_3 = True
@@ -180,7 +180,7 @@ def direct_sum_decompose(U_basis, V_basis, w):
     >>> direct_sum_decompose(U_basis, V_basis, w) == (Vec({0, 1, 2, 3, 4, 5},{0: 2.0, 1: 4.999999999999972, 2: 0.0, 3: 0.0, 4: 1.0, 5: 0.0}), Vec({0, 1, 2, 3, 4, 5},{0: 0.0, 1: 0.0, 2: 0.0, 3: 0.0, 4: 0.0, 5: 0.0}))
     True
     '''
-    uv_basis = U_basis + V_basis
+    uv_basis = U_basis + V_basis #basis of space U+V
     x = vec2rep(uv_basis,w) #x is the coordination representation in space U+V : uv_basis*x = w
     #then split the coordinations : the first len(U_basis) are coordinates in U, the rest are coordinates in V
 
@@ -206,7 +206,7 @@ def is_invertible(M):
     >>> is_invertible(M)
     True
     '''
-    pass
+    return len(M.D[0]) == len(M.D[1]) and is_independent([v for k,v in mat2coldict(M).items() ])
 
 
 ## Problem 11
@@ -219,7 +219,8 @@ def find_matrix_inverse(A):
     >>> find_matrix_inverse(M) == Mat(({0, 1, 2}, {0, 1, 2}), {(0, 1): one, (2, 0): 0, (0, 0): 0, (2, 2): one, (1, 0): one, (1, 2): 0, (1, 1): 0, (2, 1): 0, (0, 2): 0})
     True
     '''
-    pass
+    return coldict2mat([ solve(A,Vec(A.D[0],{i:one}))  for i in range(len(A.D[0]))])
+               
 
 
 
@@ -232,4 +233,4 @@ def find_triangular_matrix_inverse(A):
     >>> find_triangular_matrix_inverse(A) == Mat(({0, 1, 2, 3}, {0, 1, 2, 3}), {(0, 1): -0.5, (1, 2): -0.3, (3, 2): 0.0, (0, 0): 1.0, (3, 3): 1.0, (3, 0): 0.0, (3, 1): 0.0, (2, 1): 0.0, (0, 2): -0.05000000000000002, (2, 0): 0.0, (1, 3): -0.87, (2, 3): -0.1, (2, 2): 1.0, (1, 0): 0.0, (0, 3): -3.545, (1, 1): 1.0})
     True
     '''
-    pass
+    return coldict2mat([ solve(A,Vec(A.D[0],{i:1}))  for i in range(len(A.D[0]))])
