@@ -3,6 +3,8 @@
 
 from matutil import *
 from GF2 import one
+from vecutil import zero_vec
+from vec import Vec
 
 
 
@@ -78,8 +80,8 @@ echelon_form_vec_c = [-5,0,2,0,2]
 # If a solution exists, give it as a list vector.
 # If no solution exists, provide "None".
 
-solving_with_echelon_form_a = ...
-solving_with_echelon_form_b = ...
+solving_with_echelon_form_a = None
+solving_with_echelon_form_b = [21,0,2,0,0]
 
 
 
@@ -95,55 +97,79 @@ def echelon_solve(rowlist, label_list, b):
         - Vec x such that rowlist * x is b
     >>> D = {'A','B','C','D','E'}
     >>> U_rows = [Vec(D, {'A':one, 'E':one}), Vec(D, {'B':one, 'E':one}), Vec(D,{'C':one})] 
-    >>> b_list = [one,0,one]>>> cols = ['A', 'B', 'C', 'D', 'E']
+    >>> b_list = [one,0,one]
+    >>> cols = ['A', 'B', 'C', 'D', 'E']
     >>> echelon_solve(U_rows, cols, b_list)
     Vec({'B', 'C', 'A', 'D', 'E'},{'B': 0, 'C': one, 'A': one})
     '''
-    pass
+    def find_first_non_zero_col(row,label_list):
+        for c in label_list:
+            if(row[c])!=0:
+                return c
+        return None
+    
+    D = rowlist[0].D
+    x = zero_vec(D)
+    for j in reversed(range(len(rowlist))):
+        row = rowlist[j]
+        c = find_first_non_zero_col(row,label_list)
+        if c is None:
+            continue
+        else:
+            x[c] = (b[j] - x*row)/row[c]
+    return x
 
 
 
 ## Problem 6
-rowlist = [ ... ]    # Provide as a list of Vec instances
-label_list = [ ... ] # Provide as a list
-b = [ ... ]          # Provide as a list
+D = [ 'A','B','C','D' ]
+#rowlist = [Vec(D,{'A':one,'B':one,'D':one}),Vec(D,{'B':one}),Vec(D,{'C':one}),Vec(D,{'D':one})]    # Provide as a list of Vec instances
+rowlist = [Vec({'B', 'C', 'A', 'D'},{'B': one, 'C': 0, 'A': one, 'D': one}),
+           Vec({'B', 'C', 'A', 'D'},{'B': one, 'C': 0, 'A': 0, 'D': 0}),
+           Vec({'B', 'C', 'A', 'D'},{'B': 0, 'C': one, 'A': 0, 'D': 0}),
+           Vec({'B', 'C', 'A', 'D'},{'B': 0, 'C': 0, 'A': 0, 'D': one})]
+label_list = D # Provide as a list
+b = [ one,one,0,0 ] # Provide as a list
 
 
 
 ## Problem 7
-null_space_rows_a = {...} # Put the row numbers of M from the PDF
+null_space_rows_a = {3,4} # Put the row numbers of M from the PDF
 
 
 
 ## Problem 8
-null_space_rows_b = {...}
+null_space_rows_b = {4}
 
 
+def project_along(b, a):
+    sigma = (b*a)/(a*a) if a*a != 0 else 0
+    return sigma * a
 
 ## Problem 9
 # Write each vector as a list
-closest_vector_1 = [...]
-closest_vector_2 = [...]
-closest_vector_3 = [...]
+closest_vector_1 = [1.6,3.2]
+closest_vector_2 = [0,1,0]
+closest_vector_3 = [3,2,1,-4]
 
 
 
 ## Problem 10
 # Write each vector as a list
 
-project_onto_1 = [...]
-projection_orthogonal_1 = [...]
+project_onto_1 = [2,0]
+projection_orthogonal_1 = [0,1]
 
-project_onto_2 = [...]
-projection_orthogonal_2 = [...]
+project_onto_2 = [-0.16666666666666666,-0.3333333333333333,0.16666666666666666]
+projection_orthogonal_2 = [1.1666666666666667,1.3333333333333333,3.8333333333333335]
 
-project_onto_3 = [...]
-projection_orthogonal_3 = [...]
+project_onto_3 = [1,1,4]
+projection_orthogonal_3 = [0,0,0]
 
 
 
 ## Problem 11
-norm1 = ...
-norm2 = ...
-norm3 = ...
+norm1 = 3
+norm2 = 4
+norm3 = 1
 
