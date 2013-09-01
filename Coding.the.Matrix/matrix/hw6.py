@@ -49,11 +49,16 @@ def is_echelon(A):
         for i in range(len(row)):
             if(row[i])!=0:
                 return i
-        return 100000
+        return None
             
     rows = len(A)
     for r in range(1,rows):
-        if find_first_non_zero_col(A[r]) <= find_first_non_zero_col(A[r-1]):
+        cur  = find_first_non_zero_col(A[r]) 
+        prev = find_first_non_zero_col(A[r-1])
+        if cur is None or prev is None:
+            if not (cur is None and prev is None):
+                return False
+        elif cur<=prev: 
             return False
          
     return True
