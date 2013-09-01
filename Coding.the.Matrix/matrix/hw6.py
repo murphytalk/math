@@ -68,9 +68,9 @@ def is_echelon(A):
 ## Problem 3
 # Give each answer as a list
 
-echelon_form_vec_a = ...
-echelon_form_vec_b = ...
-echelon_form_vec_c = ...
+echelon_form_vec_a = [1,0,3,0]
+echelon_form_vec_b = [-3,0,-2,3]
+echelon_form_vec_c = [-5,0,2,0,2]
 
 
 
