@@ -1,5 +1,6 @@
 from math import sqrt
-from orthogonalization import orthogonalize
+from orthogonalization import orthogonalize,aug_orthogonalize
+from vec import Vec
 
 def orthonormalize(L):
     '''
@@ -20,4 +21,11 @@ def aug_orthonormalize(L):
             * coldict2mat(L) == coldict2mat(Qlist) * coldict2mat(Rlist)
             * Qlist = orthonormalize(L)
     '''
-    pass
+    def adjust(v,multipliers):
+        return Vec(v.D,{i: v.f[i]*multipliers[i] if i in v.f else 0 for i in v.D})
+    
+    q,r = aug_orthogonalize(L)
+    Qlist = orthonormalize(q)
+    Rlist = [ adjust(v,[ sqrt(v*v) for v in orthogonalize(L) ]) for v in r ]
+    return Qlist,Rlist
+    
